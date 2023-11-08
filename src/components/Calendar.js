@@ -10,32 +10,34 @@ import "../styles/Calendar.scss";
 
 const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(dayjs());
+    const [allEvents, setAllEvents] = useState([]);
+    const [filteredEvents, setFilteredEvents] = useState([]);
 
-    const [events] = useState([
-        { date: "2023-11-06T09:00:00", title: "Événement 1" },
-    ]);
-    const [eventDay, setEventDay] = useState([]);
+    useEffect(() => {
+        console.log("selectedDate", selectedDate.format());
+        const storedEvents = JSON.parse(localStorage.getItem("events"));
+        if (storedEvents) {
+            setAllEvents(storedEvents);
+
+            // Filtrez les événements pour la date sélectionnée
+            // const eventsForSelectedDate = storedEvents.filter((event) =>
+            //     dayjs(event.dateStart).isSame(selectedDate, "day")
+            // );
+            // Mettez à jour l'état avec les événements filtrés
+            // setFilteredEvents(eventsForSelectedDate);
+        }
+    }, [selectedDate]);
+
+
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
     };
 
-    //uSE EFFECT POUR AFFICHER LES EVENEMENTS DU JOUR
-    useEffect(() => {
-        const eventsForSelectedDate = events.filter((event) =>
-            dayjs(event.date).isSame(selectedDate, "day")
-        );
-        console.log(eventsForSelectedDate);
-        setEventDay(eventsForSelectedDate);
-    }, [selectedDate, events]);
-
     return (
         <Grid container>
             <Grid item xs={9}>
-                <DetailCalendar
-                    selectedDate={selectedDate.format()}
-                    eventDay={eventDay}
-                />
+                <DetailCalendar selectedDate={selectedDate} eventDay={allEvents} />
             </Grid>
             <Grid item xs={3}>
                 <div className="calendar">

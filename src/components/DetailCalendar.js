@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -11,6 +11,25 @@ import Backdrop from "@mui/material/Backdrop";
 
 const DetailCalendar = ({ selectedDate, eventDay }) => {
     const [openModal, setOpenModal] = useState(false);
+    const [events, setEvents] = useState([]);
+    const calendarRef = useRef(null);
+
+    useEffect(() => {
+        const eventsForSelectedDate = eventDay.map((event) => ({
+            title: event.title,
+            start: event.dateStart,
+            end: event.dateEnd,
+            backgroundColor: event.color,
+        }));
+
+        setEvents(eventsForSelectedDate);
+    }, [eventDay]);
+
+    useEffect(() => {
+        if (calendarRef.current) {
+            calendarRef.current.getApi().gotoDate(selectedDate.format());
+        }
+    }, [selectedDate]);
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -19,6 +38,7 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
     const handleCloseModal = () => {
         setOpenModal(false);
     };
+
     return (
         <Box height={100} sx={{ padding: 4 }}>
             <Stack
@@ -51,18 +71,17 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
                 <FullCalendar
                     plugins={[timeGridPlugin]}
                     initialView="timeGridDay"
-                    events={eventDay} // Liste des événements à afficher
-                    headerToolbar={false} // Désactive l'affichage du header
-                    slotMinTime="09:00:00" // Définit l'heure de début de la journée
-                    slotMaxTime="21:00:00" // Définit l'heure de fin de la journée
-                    allDaySlot={false} // Désactive l'affichage des événements sur toute la journée
-                    dayHeaderFormat={{ weekday: "short" }}
+                    events={events}
+                    slotMinTime="09:00:00"
+                    slotMaxTime="21:00:00"
+                    allDaySlot={false}
                     slotLabelFormat={{
                         hour: "2-digit",
                         minute: "2-digit",
-                        hour12: false, // Désactive l'affichage AM/PM
+                        hour12: false,
                     }}
-                    slotDuration="01:00:00" // Définit la durée d'un créneau horaire
+                    slotDuration="01:00:00"
+                    ref={calendarRef}
                 />
             </Box>
         </Box>

@@ -14,6 +14,12 @@ import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 const ModalForm = ({ open, onClose }) => {
     const [selectedColor, setSelectedColor] = useState("#000");
     const [showColorPicker, setShowColorPicker] = useState(false);
+    const [title, setTitle] = useState("");
+    const [dateStart, setDateStart] = useState("");
+    const [dateEnd, setDateEnd] = useState("");
+    const [timeStart, setTimeStart] = useState("");
+    const [timeEnd, setTimeEnd] = useState("");
+
 
     const handleColorChange = (color) => {
         setSelectedColor(color.hex);
@@ -27,6 +33,47 @@ const ModalForm = ({ open, onClose }) => {
         setShowColorPicker(false);
     };
 
+    const onSubmit = (formData) => {
+        console.log(formData);
+    }
+
+
+    const handleAddEvent = () => {
+        var error = false;
+
+        if (!title || !dateStart || !dateEnd || !timeStart) {
+            alert("Veuillez remplir tous les champs requis.");
+        } else {
+            const formData = {
+                title: title,
+                color: selectedColor,
+                dateStart: new Date(
+                    dateStart.getFullYear(),
+                    dateStart.getMonth(),
+                    dateStart.getDate(),
+                    timeStart.getHours(),
+                    timeStart.getMinutes(),
+                    timeStart.getSeconds()
+                ),
+                dateEnd: new Date(
+                    dateEnd.getFullYear(),
+                    dateEnd.getMonth(),
+                    dateEnd.getDate(),
+                    timeEnd.getHours(),
+                    timeEnd.getMinutes(),
+                    timeEnd.getSeconds()
+                ),
+            };
+
+            //onSubmit(formData);
+            const eventsFromLocalStorage = JSON.parse(localStorage.getItem("events")) || [];
+            localStorage.setItem("events", JSON.stringify([...eventsFromLocalStorage, formData]));
+
+            onClose();
+        }
+    };
+
+
     return (
         <Dialog open={open} onClose={onClose} className="modal">
             <DialogContent>
@@ -34,12 +81,12 @@ const ModalForm = ({ open, onClose }) => {
                     <TextField
                         fullWidth
                         margin="dense"
-                        id="name"
+                        id="title"
                         label="Add Title"
                         type="text"
                         variant="standard"
+                        onChange={(e) => setTitle(e.target.value)}
                     />
-
                     <div
                         style={{
                             width: "20px",
@@ -51,6 +98,7 @@ const ModalForm = ({ open, onClose }) => {
                     ></div>
                     {showColorPicker && (
                         <SketchPicker
+
                             color={selectedColor}
                             onChange={handleColorChange}
                             onChangeComplete={handleCloseColorPicker}
@@ -58,40 +106,31 @@ const ModalForm = ({ open, onClose }) => {
                     )}
                 </Stack>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} sx={{ marginTop: "20px" }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["DatePicker"]}>
-                            <DatePicker
-                                label={'"month" and "year"'}
-                                views={["day", "month"]}
-                            />
-                        </DemoContainer>
+                        <DatePicker
+                            onChange={(newValue) => { setDateStart(newValue.$d) }}
+                            label={'"month" and "year"'}
+                            views={["day", "month"]}
+                        />
                     </LocalizationProvider>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["DatePicker"]}>
-                            <DatePicker
-                                label={'"month" and "year"'}
-                                views={["month", "day"]}
-                            />
-                        </DemoContainer>
+                        <DatePicker
+                            onChange={(newValue) => { setDateEnd(newValue.$d) }}
+                            label={'"month" and "year"'}
+                            views={["month", "day"]}
+                        />
                     </LocalizationProvider>
                 </Stack>
 
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} sx={{ marginTop: "20px" }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer
-                            components={["MobileDateTimePicker", "MobileDateTimePicker"]}
-                        >
-                            <MobileTimePicker label={'"hours"'} openTo="hours" />
-                        </DemoContainer>
+                        <MobileTimePicker label={'"hours"'} openTo="hours"
+                            onChange={(newValue) => { setTimeStart(newValue.$d) }} />
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer
-                            components={["MobileDateTimePicker", "MobileDateTimePicker"]}
-                        >
-                            <MobileTimePicker label={'"hours"'} openTo="hours" />
-                        </DemoContainer>
+                        <MobileTimePicker label={'"hours"'} openTo="hours" onChange={(newValue) => { setTimeEnd(newValue.$d) }} />
                     </LocalizationProvider>
                 </Stack>
                 <TextField
@@ -107,6 +146,7 @@ const ModalForm = ({ open, onClose }) => {
                     color="primary"
                     type="submit"
                     style={{ backgroundColor: selectedColor }}
+                    onClick={handleAddEvent}
                 >
                     Add
                 </Button>
