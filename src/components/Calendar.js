@@ -1,82 +1,55 @@
-import React, { useState } from 'react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs from 'dayjs';
-import { Stack } from '@mui/system';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import '../styles/Calendar.scss';
-
+import React, { useState, useEffect } from "react";
+import { Grid } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+import DetailCalendar from "./DetailCalendar";
+import "../styles/Calendar.scss";
 
 const Calendar = () => {
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(dayjs());
+
+    const [events] = useState([
+        { date: "2023-11-06T09:00:00", title: "Événement 1" },
+    ]);
+    const [eventDay, setEventDay] = useState([]);
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
     };
 
-    const getEventsForSelectedDate = () => {
-        if (selectedDate) {
-            const events = [
-                { date: '2023-11-06', title: 'Événement 1' },
-
-            ];
-
-            const eventsForSelectedDate = events.filter(event => dayjs(event.date).isSame(selectedDate, 'day'));
-
-            return `${eventsForSelectedDate.map(event => event.title)}`;
-        }
-
-        return '';
-    };
+    //uSE EFFECT POUR AFFICHER LES EVENEMENTS DU JOUR
+    useEffect(() => {
+        const eventsForSelectedDate = events.filter((event) =>
+            dayjs(event.date).isSame(selectedDate, "day")
+        );
+        console.log(eventsForSelectedDate);
+        setEventDay(eventsForSelectedDate);
+    }, [selectedDate, events]);
 
     return (
-        <div>
-            {/* display selected date*/}
-            <div className='info'>
-                <Stack spacing={2} direction="row">
-                    {selectedDate && (
-                        <Typography variant="h5">
-                            {dayjs(selectedDate).format('D MMMM')}
-                        </Typography>
-                    )}
-                    <Fab color="primary" aria-label="add">
-                        <AddIcon />
-                    </Fab>
-                </Stack>
-            </div>
-
-            {/* display calendar */}
-            <Box display="flex">
-                <Box flex="1">
-                    <TextField
-                        label="Horaires et événements"
-                        multiline
-                        fullWidth
-                        variant="outlined"
-                        rows={10}
-                        value={getEventsForSelectedDate()}
-                        InputProps={{ readOnly: true }}
-                    />
-                </Box>
-
-                <div className='calendar'>
-                    <Box flex="2" >
-                        <LocalizationProvider dateAdapter={AdapterDayjs} >
-                            <DateCalendar
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                showFooter={false}
-                            />
-                        </LocalizationProvider>
-                    </Box>
+        <Grid container>
+            <Grid item xs={9}>
+                <DetailCalendar
+                    selectedDate={selectedDate.format()}
+                    eventDay={eventDay}
+                />
+            </Grid>
+            <Grid item xs={3}>
+                <div className="calendar">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateCalendar
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                            showFooter={false}
+                            views={["day"]}
+                        />
+                    </LocalizationProvider>
                 </div>
-            </Box>
-        </div>
+            </Grid>
+        </Grid>
     );
 };
 
