@@ -1,5 +1,4 @@
 import Calendar from './components/Calendar';
-import DetailCalendar from './components/DetailCalendar';
 import './styles/App.scss';
 
 function App() {

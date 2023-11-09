@@ -33,16 +33,13 @@ const ModalForm = ({ open, onClose }) => {
         setShowColorPicker(false);
     };
 
-    const onSubmit = (formData) => {
-        console.log(formData);
-    }
 
 
     const handleAddEvent = () => {
         if (!title || !dateStart || !dateEnd || !timeStart) {
             alert("Veuillez remplir tous les champs requis.");
         } else {
-            const eventId = Math.floor(Math.random() * 1000); // Générez un identifiant unique
+            const eventId = Math.floor(Math.random() * 1000);
             const formData = {
                 id: eventId,
                 title: title,
@@ -69,6 +66,7 @@ const ModalForm = ({ open, onClose }) => {
             localStorage.setItem("events", JSON.stringify([...eventsFromLocalStorage, formData]));
 
             onClose();
+            window.location.reload();
         }
     };
 
@@ -150,7 +148,6 @@ const ModalForm = ({ open, onClose }) => {
                     type="submit"
                     style={{ backgroundColor: selectedColor, float: "right", }}
                     onClick={handleAddEvent}
-
                 >
                     Add
                 </Button>

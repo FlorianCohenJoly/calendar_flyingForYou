@@ -6,7 +6,6 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
 import DetailCalendar from "./DetailCalendar";
-import "../styles/Calendar.scss";
 
 const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -19,8 +18,6 @@ const Calendar = () => {
             setAllEvents(storedEvents);
         }
     }, [selectedDate]);
-
-
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);

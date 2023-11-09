@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Stack, Typography, Button } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FullCalendar from "@fullcalendar/react";
@@ -8,13 +8,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import Divider from "@mui/material/Divider";
 import ModalForm from "./ModalForm";
 import Backdrop from "@mui/material/Backdrop";
+import IconButton from "@mui/material/IconButton";
+import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 
 const DetailCalendar = ({ selectedDate, eventDay }) => {
     const [openModal, setOpenModal] = useState(false);
     const [events, setEvents] = useState([]);
     const calendarRef = useRef(null);
 
-    // Chargement des événements depuis le localStorage au démarrage
     useEffect(() => {
         const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
         setEvents(storedEvents);
@@ -22,7 +23,7 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
 
     useEffect(() => {
         const eventsForSelectedDate = eventDay.map((event) => ({
-            id: event.id, // Assurez-vous que chaque événement a un identifiant unique
+            id: event.id,
             title: event.title,
             start: event.dateStart,
             end: event.dateEnd,
@@ -102,14 +103,20 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
                     events={events}
                     eventContent={(arg) => (
                         <div>
-                            <p>{arg.event.title}</p>
-                            <Button
-                                variant="outlined"
-                                color="error"
+                            <p className="title">{arg.event.title}</p>
+                            <IconButton
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    right: '10px',
+                                }}
+                                color="black"
                                 onClick={() => deleteEvent(arg.event.id)}
+                                size="small"
                             >
-                                Supprimer
-                            </Button>
+                                <DisabledByDefaultRoundedIcon color="error" />
+                            </IconButton>
                         </div>
                     )}
                 />
