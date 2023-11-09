@@ -77,13 +77,17 @@ const ModalForm = ({ open, onClose }) => {
                 <Stack direction="row" spacing={2}>
                     <TextField
                         fullWidth
-                        margin="dense"
                         id="title"
                         label="Add Title"
                         type="text"
                         variant="standard"
+                        style={{ padding: "24px" }}
+                        InputLabelProps={{
+                            style: { fontSize: '36px' }
+                        }}
                         onChange={(e) => setTitle(e.target.value)}
                     />
+
                     <div
                         style={{
                             width: "20px",
