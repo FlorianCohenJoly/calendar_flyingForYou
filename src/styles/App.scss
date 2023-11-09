@@ -3,6 +3,7 @@ body {
     padding: 0;
   }
   .calendar {
+    display: flex;
     height: 200vh;
     background-color: #5c5f6c;
     .MuiDateCalendar-root {
@@ -28,6 +29,12 @@ body {
   .fc-timegrid-now-indicator-container{
     background-color: white;
   }
+  
+  .fc .fc-timegrid-slot {
+   height: 5.5em;
+   border: none;
+   --fc-daygrid-event-dot-width: 0px;
 
-  
-  
+  }
+
+

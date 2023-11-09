@@ -7,7 +7,6 @@ import { SketchPicker } from "react-color";
 import { Stack } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 
@@ -19,6 +18,7 @@ const ModalForm = ({ open, onClose }) => {
     const [dateEnd, setDateEnd] = useState("");
     const [timeStart, setTimeStart] = useState("");
     const [timeEnd, setTimeEnd] = useState("");
+    const [description, setDescription] = useState("");
 
 
     const handleColorChange = (color) => {
@@ -39,12 +39,12 @@ const ModalForm = ({ open, onClose }) => {
 
 
     const handleAddEvent = () => {
-        var error = false;
-
         if (!title || !dateStart || !dateEnd || !timeStart) {
             alert("Veuillez remplir tous les champs requis.");
         } else {
+            const eventId = Math.floor(Math.random() * 1000); // Générez un identifiant unique
             const formData = {
+                id: eventId,
                 title: title,
                 color: selectedColor,
                 dateStart: new Date(
@@ -63,9 +63,8 @@ const ModalForm = ({ open, onClose }) => {
                     timeEnd.getMinutes(),
                     timeEnd.getSeconds()
                 ),
+                description: description,
             };
-
-            //onSubmit(formData);
             const eventsFromLocalStorage = JSON.parse(localStorage.getItem("events")) || [];
             localStorage.setItem("events", JSON.stringify([...eventsFromLocalStorage, formData]));
 
@@ -93,12 +92,14 @@ const ModalForm = ({ open, onClose }) => {
                             height: "20px",
                             backgroundColor: selectedColor,
                             cursor: "pointer",
+                            marginTop: "29px",
+
                         }}
                         onClick={handleOpenColorPicker}
                     ></div>
                     {showColorPicker && (
                         <SketchPicker
-
+                            className="color-picker"
                             color={selectedColor}
                             onChange={handleColorChange}
                             onChangeComplete={handleCloseColorPicker}
@@ -134,24 +135,27 @@ const ModalForm = ({ open, onClose }) => {
                     </LocalizationProvider>
                 </Stack>
                 <TextField
-                    label="Description"
+                    id="description"
+                    label="Comment"
                     multiline
-                    rows={4}
+                    rows={2}
                     fullWidth
                     variant="standard"
                     margin="normal"
+                    onChange={(e) => setDescription(e.target.value)}
                 />
                 <Button
                     variant="contained"
                     color="primary"
                     type="submit"
-                    style={{ backgroundColor: selectedColor }}
+                    style={{ backgroundColor: selectedColor, float: "right", }}
                     onClick={handleAddEvent}
+
                 >
                     Add
                 </Button>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };
 

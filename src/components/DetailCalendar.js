@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Button } from "@mui/material";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import FullCalendar from "@fullcalendar/react";
@@ -14,13 +14,22 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
     const [events, setEvents] = useState([]);
     const calendarRef = useRef(null);
 
+    // Chargement des événements depuis le localStorage au démarrage
+    useEffect(() => {
+        const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+        setEvents(storedEvents);
+    }, []);
+
     useEffect(() => {
         const eventsForSelectedDate = eventDay.map((event) => ({
+            id: event.id, // Assurez-vous que chaque événement a un identifiant unique
             title: event.title,
             start: event.dateStart,
             end: event.dateEnd,
             backgroundColor: event.color,
+            description: event.description,
         }));
+        console.log("eventsForSelectedDate", eventsForSelectedDate);
 
         setEvents(eventsForSelectedDate);
     }, [eventDay]);
@@ -37,6 +46,14 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+    };
+
+    const deleteEvent = (eventID) => {
+
+        const eventsFromLocalStorage = JSON.parse(localStorage.getItem("events")) || [];
+        const updatedEvents = eventsFromLocalStorage.filter((event) => event.id != eventID);
+        localStorage.setItem("events", JSON.stringify(updatedEvents));
+        window.location.reload();
     };
 
     return (
@@ -71,9 +88,9 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
                 <FullCalendar
                     plugins={[timeGridPlugin]}
                     initialView="timeGridDay"
-                    events={events}
                     slotMinTime="09:00:00"
-                    slotMaxTime="21:00:00"
+                    slotMaxTime="23:00:00"
+                    headerToolbar={false}
                     allDaySlot={false}
                     slotLabelFormat={{
                         hour: "2-digit",
@@ -82,10 +99,24 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
                     }}
                     slotDuration="01:00:00"
                     ref={calendarRef}
+                    events={events}
+                    eventContent={(arg) => (
+                        <div>
+                            <p>{arg.event.title}</p>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={() => deleteEvent(arg.event.id)}
+                            >
+                                Supprimer
+                            </Button>
+                        </div>
+                    )}
                 />
             </Box>
         </Box>
     );
 };
+
 
 export default DetailCalendar;

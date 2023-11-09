@@ -11,20 +11,12 @@ import "../styles/Calendar.scss";
 const Calendar = () => {
     const [selectedDate, setSelectedDate] = useState(dayjs());
     const [allEvents, setAllEvents] = useState([]);
-    const [filteredEvents, setFilteredEvents] = useState([]);
 
     useEffect(() => {
         console.log("selectedDate", selectedDate.format());
         const storedEvents = JSON.parse(localStorage.getItem("events"));
         if (storedEvents) {
             setAllEvents(storedEvents);
-
-            // Filtrez les événements pour la date sélectionnée
-            // const eventsForSelectedDate = storedEvents.filter((event) =>
-            //     dayjs(event.dateStart).isSame(selectedDate, "day")
-            // );
-            // Mettez à jour l'état avec les événements filtrés
-            // setFilteredEvents(eventsForSelectedDate);
         }
     }, [selectedDate]);
 
