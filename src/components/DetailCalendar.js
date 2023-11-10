@@ -41,6 +41,7 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
         }
     }, [selectedDate]);
 
+
     const handleOpenModal = () => {
         setOpenModal(true);
     };
@@ -50,7 +51,6 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
     };
 
     const deleteEvent = (eventID) => {
-
         const eventsFromLocalStorage = JSON.parse(localStorage.getItem("events")) || [];
         const updatedEvents = eventsFromLocalStorage.filter((event) => event.id != eventID);
         localStorage.setItem("events", JSON.stringify(updatedEvents));
@@ -85,7 +85,7 @@ const DetailCalendar = ({ selectedDate, eventDay }) => {
                 <Backdrop className="backdrop" open={openModal} />
             </Stack>
             <Divider sx={{ my: 2 }} />
-            <Box>
+            <Box sx={{ marginRight: "50px", marginLeft: "50px" }}>
                 <FullCalendar
                     plugins={[timeGridPlugin]}
                     initialView="timeGridDay"

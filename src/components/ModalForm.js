@@ -10,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 
+
 const ModalForm = ({ open, onClose }) => {
     const [selectedColor, setSelectedColor] = useState("#000");
     const [showColorPicker, setShowColorPicker] = useState(false);
@@ -32,8 +33,6 @@ const ModalForm = ({ open, onClose }) => {
     const handleCloseColorPicker = () => {
         setShowColorPicker(false);
     };
-
-
 
     const handleAddEvent = () => {
         if (!title || !dateStart || !dateEnd || !timeStart) {
@@ -81,7 +80,7 @@ const ModalForm = ({ open, onClose }) => {
                         label="Add Title"
                         type="text"
                         variant="standard"
-                        style={{ padding: "24px" }}
+                        style={{ padding: "24px", fontFamily: "Montserrat" }}
                         InputLabelProps={{
                             style: { fontSize: '36px' }
                         }}
@@ -90,11 +89,11 @@ const ModalForm = ({ open, onClose }) => {
 
                     <div
                         style={{
-                            width: "20px",
-                            height: "20px",
+                            width: "30px",
+                            height: "30px",
                             backgroundColor: selectedColor,
                             cursor: "pointer",
-                            marginTop: "29px",
+                            marginTop: "45px",
 
                         }}
                         onClick={handleOpenColorPicker}
@@ -113,7 +112,7 @@ const ModalForm = ({ open, onClose }) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             onChange={(newValue) => { setDateStart(newValue.$d) }}
-                            label={'"month" and "year"'}
+                            label={'Start Date'}
                             views={["day", "month"]}
                         />
                     </LocalizationProvider>
@@ -121,7 +120,7 @@ const ModalForm = ({ open, onClose }) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             onChange={(newValue) => { setDateEnd(newValue.$d) }}
-                            label={'"month" and "year"'}
+                            label={'End Date'}
                             views={["month", "day"]}
                         />
                     </LocalizationProvider>
@@ -129,11 +128,11 @@ const ModalForm = ({ open, onClose }) => {
 
                 <Stack direction="row" spacing={2} sx={{ marginTop: "20px" }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <MobileTimePicker label={'"hours"'} openTo="hours"
+                        <MobileTimePicker label={'Start time'} openTo="hours"
                             onChange={(newValue) => { setTimeStart(newValue.$d) }} />
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <MobileTimePicker label={'"hours"'} openTo="hours" onChange={(newValue) => { setTimeEnd(newValue.$d) }} />
+                        <MobileTimePicker label={'End time'} openTo="hours" onChange={(newValue) => { setTimeEnd(newValue.$d) }} />
                     </LocalizationProvider>
                 </Stack>
                 <TextField
