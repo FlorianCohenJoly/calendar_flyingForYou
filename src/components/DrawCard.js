@@ -1,32 +1,42 @@
 import React, { useState } from 'react';
 
-function DrawCard({ players, wordAssignments, handleNext }) {
-    const [currentPlayer, setCurrentPlayer] = useState(0);
-    const [word, setWord] = useState('');
+function DrawCard({ players, wordAssignments, onAllPlayersDrawn }) {
+    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+    const [revealedWords, setRevealedWords] = useState({});
+    const [showWord, setShowWord] = useState(false);
 
-    const drawWord = () => {
-        setWord(wordAssignments[currentPlayer]);
+    const handleDrawCard = () => {
+        setShowWord(true);
     };
 
-    const nextPlayer = () => {
-        if (currentPlayer < players.length - 1) {
-            setCurrentPlayer(currentPlayer + 1);
-            setWord('');
+    const handleNextPlayer = () => {
+        setShowWord(false);
+        if (currentPlayerIndex < players.length - 1) {
+            setCurrentPlayerIndex(currentPlayerIndex + 1);
         } else {
-            handleNext();
+            onAllPlayersDrawn();
         }
     };
 
     return (
         <div>
-            <h2>Player {players[currentPlayer]} Draw Your Word</h2>
-            {word ? (
-                <>
-                    <p>Your word: {word}</p>
-                    <button onClick={nextPlayer}>Next Player</button>
-                </>
+            <h2>Draw Cards</h2>
+            {currentPlayerIndex < players.length ? (
+                <div>
+                    <h3>{players[currentPlayerIndex]}, draw your card:</h3>
+                    <button onClick={handleDrawCard}>Draw Card</button>
+                    {showWord && (
+                        <div>
+                            <p>Your word: {wordAssignments[currentPlayerIndex]}</p>
+                            <button onClick={handleNextPlayer}>Next Player</button>
+                        </div>
+                    )}
+                </div>
             ) : (
-                <button onClick={drawWord}>Draw Word</button>
+                <div>
+                    <h3>All players have drawn their cards. The game is starting.</h3>
+                    <button onClick={onAllPlayersDrawn}>Start Voting Phase</button>
+                </div>
             )}
         </div>
     );

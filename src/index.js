@@ -1,12 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import ReactDOM from 'react-dom';
+import '/Users/floriancohen-joly/Documents/GitHub/calendar_flyingForYou/src/style.css'; // Importez les styles CSS
+import Setup from './components/Setup';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-
+ReactDOM.render(<Setup />, document.getElementById('root'));

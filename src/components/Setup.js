@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import Game from './Game';
 import DrawCard from './DrawCard';
 import words from './words.json'; // Assurez-vous que ce chemin est correct
+import '/Users/floriancohen-joly/Documents/GitHub/calendar_flyingForYou/src/style.css'; // Importez le fichier CSS
 
 function Setup() {
     const [playerNames, setPlayerNames] = useState('');
     const [players, setPlayers] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [wordAssignments, setWordAssignments] = useState([]);
+    const [wordAssignments, setWordAssignments] = useState({});
     const [gameStarted, setGameStarted] = useState(false);
-    const [gameOver, setGameOver] = useState(false);
+    const [allPlayersDrawn, setAllPlayersDrawn] = useState(false);
 
     const handleChange = (e) => {
         setPlayerNames(e.target.value);
@@ -17,10 +18,10 @@ function Setup() {
 
     const handleStartGame = () => {
         const names = playerNames.split(',').map(name => name.trim());
-        const roles = assignRoles(names.length);
-        const wordAssignments = assignWords(roles);
         console.log('Player names:', names);
-        console.log('Roles assigned:', roles);
+        const roles = assignRoles(names.length);
+        console.log('Assigned roles:', roles);
+        const wordAssignments = assignWords(roles);
         console.log('Word assignments:', wordAssignments);
         setPlayers(names);
         setRoles(roles);
@@ -42,6 +43,7 @@ function Setup() {
 
     const assignWords = (roles) => {
         const selectedWords = words[Math.floor(Math.random() * words.length)];
+        console.log('Selected words:', selectedWords);
         const wordAssignments = {};
         roles.forEach((role, index) => {
             if (role === 'citizen') {
@@ -52,7 +54,6 @@ function Setup() {
                 wordAssignments[index] = 'Aucun mot'; // Mr. White n'a pas de mot
             }
         });
-        console.log('Word assignments by role:', wordAssignments);
         return wordAssignments;
     };
 
@@ -64,21 +65,14 @@ function Setup() {
         return array;
     };
 
-    const handleGameStart = () => {
-        setGameOver(true);
-    };
-
-    const resetGame = (remainingPlayers) => {
-        console.log('Remaining players after elimination:', remainingPlayers);
-        const updatedRoles = roles.filter((_, index) => remainingPlayers.includes(players[index]));
-        console.log('Updated roles after elimination:', updatedRoles);
-        setRoles(updatedRoles);
-        setPlayers(remainingPlayers);
+    const handleAllPlayersDrawn = () => {
+        console.log('All players have drawn their cards.');
+        setAllPlayersDrawn(true);
     };
 
     return (
-        <div>
-            {!gameStarted && !gameOver ? (
+        <div className="container">
+            {!gameStarted ? (
                 <>
                     <h2>Setup Game</h2>
                     <input
@@ -89,14 +83,10 @@ function Setup() {
                     />
                     <button onClick={handleStartGame}>Start Game</button>
                 </>
-            ) : !gameOver ? (
-                <DrawCard
-                    players={players}
-                    wordAssignments={wordAssignments}
-                    handleNext={handleGameStart}
-                />
+            ) : !allPlayersDrawn ? (
+                <DrawCard players={players} wordAssignments={wordAssignments} onAllPlayersDrawn={handleAllPlayersDrawn} />
             ) : (
-                <Game players={players} roles={roles} resetGame={resetGame} />
+                <Game players={players} roles={roles} />
             )}
         </div>
     );
