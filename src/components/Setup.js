@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Game from './Game';
 import DrawCard from './DrawCard';
 import words from './words.json'; // Assurez-vous que ce chemin est correct
-import '/Users/floriancohen-joly/Documents/GitHub/calendar_flyingForYou/src/style.css'; // Importez le fichier CSS
+
+
 
 function Setup() {
     const [playerNames, setPlayerNames] = useState('');
