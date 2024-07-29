@@ -3,25 +3,27 @@ import React, { useState } from 'react';
 function Vote({ players, handleVote }) {
     const [selectedPlayer, setSelectedPlayer] = useState('');
 
-    const handleChange = (e) => {
-        setSelectedPlayer(e.target.value);
-    };
-
-    const handleSubmit = () => {
-        handleVote(selectedPlayer);
-        setSelectedPlayer('');
+    const submitVote = () => {
+        if (selectedPlayer) {
+            handleVote(selectedPlayer);
+        }
     };
 
     return (
         <div>
-            <h3>Vote</h3>
-            <select value={selectedPlayer} onChange={handleChange}>
+            <h2>Vote for a Player</h2>
+            <select
+                value={selectedPlayer}
+                onChange={(e) => setSelectedPlayer(e.target.value)}
+            >
                 <option value="">Select a player</option>
-                {players.map((player, index) => (
-                    <option key={index} value={player}>{player}</option>
+                {players.map((player) => (
+                    <option key={player} value={player}>
+                        {player}
+                    </option>
                 ))}
             </select>
-            <button onClick={handleSubmit}>Submit Vote</button>
+            <button onClick={submitVote}>Submit Vote</button>
         </div>
     );
 }

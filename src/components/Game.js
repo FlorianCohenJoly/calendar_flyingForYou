@@ -1,67 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import Vote from './Vote';
-import EndGame from './EndGame';
+import React, { useState } from 'react';
 
-function Game({ players, roles, wordAssignments }) {
-    const [round, setRound] = useState(1);
-    const [votes, setVotes] = useState([]);
-    const [eliminated, setEliminated] = useState([]);
-    const [gameOver, setGameOver] = useState(false);
-    const [winner, setWinner] = useState('');
+function Game({ players, roles, resetGame }) {
+    const [votedPlayerIndex, setVotedPlayerIndex] = useState(null);
+    const [remainingPlayers, setRemainingPlayers] = useState(players);
 
-    useEffect(() => {
-        if (eliminated.length > 0) {
-            checkWinCondition();
-        }
-    }, [eliminated]);
+    // Fonction pour gérer le vote
+    const handleVote = (index) => {
+        console.log('Index du joueur voté:', index);
+        console.log('Joueurs restants avant le vote:', remainingPlayers);
 
-    const handleVote = (vote) => {
-        setVotes([...votes, vote]);
-        if (votes.length + 1 === players.filter(p => !eliminated.includes(p)).length) {
-            const mostVotedPlayer = getMostVotedPlayer([...votes, vote]);
-            setEliminated([...eliminated, mostVotedPlayer]);
-            setVotes([]);
-            setRound(round + 1);
-        }
+        // Afficher le joueur voté
+        const votedPlayer = remainingPlayers[index];
+        console.log('Joueur voté:', votedPlayer);
+
+        // Trouver le rôle du joueur voté en utilisant l'index
+        const originalIndex = players.indexOf(votedPlayer);
+        const playerRole = roles[originalIndex];
+        console.log('Rôle du joueur voté:', playerRole);
+
+        // Mettre à jour l'état du joueur voté
+        setVotedPlayerIndex(index);
+
+        // Éliminer le joueur voté
+        const newRemainingPlayers = remainingPlayers.filter((_, i) => i !== index);
+        console.log('Joueurs restants après le vote:', newRemainingPlayers);
+        setRemainingPlayers(newRemainingPlayers);
     };
 
-    const getMostVotedPlayer = (votes) => {
-        const voteCount = {};
-        votes.forEach((vote) => {
-            voteCount[vote] = (voteCount[vote] || 0) + 1;
-        });
-        const sortedVotes = Object.entries(voteCount).sort((a, b) => b[1] - a[1]);
-        return sortedVotes[0][0];
+    // Fonction pour retourner à la phase de vote
+    const handleReturnToVoting = () => {
+        setVotedPlayerIndex(null);
+        resetGame(remainingPlayers);
     };
 
-    const checkWinCondition = () => {
-        const remainingRoles = roles.filter((role, index) => !eliminated.includes(players[index]));
-        const undercovers = remainingRoles.filter(role => role === 'undercover').length;
-        const mrWhite = remainingRoles.filter(role => role === 'mr. white').length;
-        const citizens = remainingRoles.filter(role => role === 'citizen').length;
-
-        if (undercovers === 0 && mrWhite === 0) {
-            setWinner('Citizens');
-            setGameOver(true);
-        } else if (undercovers >= citizens || (mrWhite > 0 && citizens === 0)) {
-            setWinner('Undercovers');
-            setGameOver(true);
-        }
-    };
-
-    return gameOver ? (
-        <EndGame winner={winner} />
-    ) : (
+    return (
         <div>
-            <h2>Game Round {round}</h2>
-            <ul>
-                {players.map((player, index) => (
-                    !eliminated.includes(player) && (
-                        <li key={index}>{player} - Your word: {wordAssignments[index]}</li>
-                    )
-                ))}
-            </ul>
-            <Vote players={players.filter(player => !eliminated.includes(player))} handleVote={handleVote} />
+            <h2>Game in Progress</h2>
+            {votedPlayerIndex === null ? (
+                <div>
+                    <h3>Select a player to vote for:</h3>
+                    <ul>
+                        {remainingPlayers.map((player, index) => (
+                            <li key={index}>
+                                {player} <button onClick={() => handleVote(index)}>Vote</button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ) : (
+                <div>
+                    <h3>Vote Results:</h3>
+                    <p>
+                        Player {remainingPlayers[votedPlayerIndex]} is a {roles[players.indexOf(remainingPlayers[votedPlayerIndex])]}
+                    </p>
+                    <button onClick={handleReturnToVoting}>Return to Voting</button>
+                </div>
+            )}
         </div>
     );
 }
