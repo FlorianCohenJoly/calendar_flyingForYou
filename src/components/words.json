@@ -1,0 +1,7 @@
+[
+  { "citizen": "chat", "undercover": "souris" },
+  { "citizen": "soleil", "undercover": "nuit" },
+  { "citizen": "montagne", "undercover": "plage" },
+  { "citizen": "voiture", "undercover": "moto" },
+  { "citizen": "table", "undercover": "bureau" }
+]
